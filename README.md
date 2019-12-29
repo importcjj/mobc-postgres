@@ -3,7 +3,7 @@ mobc-postgres
 
 [![Build Status](https://travis-ci.com/importcjj/mobc-postgres.svg?token=ZZrg3rRkUA8NUGrjEsU9&branch=master)](https://travis-ci.com/importcjj/mobc-postgres) [![crates.io](https://img.shields.io/badge/crates.io-latest-%23dea584)](https://crates.io/crates/mobc-postgres)
 
-[Documentation](https://docs.rs/mobc/latest/mobc-postgres/)
+[Documentation](https://docs.rs/mobc-postgres)
 
 ## Example 
 
