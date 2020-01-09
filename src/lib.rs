@@ -1,8 +1,7 @@
 pub use tokio_postgres;
 pub use mobc;
-use futures::prelude::*;
 use mobc::Manager;
-use mobc::ResultFuture;
+use mobc::async_trait;
 use tokio_postgres::tls::{MakeTlsConnect, TlsConnect};
 use tokio_postgres::Client;
 use tokio_postgres::Config;
@@ -60,6 +59,7 @@ impl<Tls> PgConnectionManager<Tls> {
     }
 }
 
+#[async_trait]
 impl<Tls> Manager for PgConnectionManager<Tls>
 where
     Tls: MakeTlsConnect<Socket> + Clone + Send + Sync + 'static,
@@ -70,21 +70,15 @@ where
     type Connection = Client;
     type Error = Error;
 
-    fn connect(&self) -> ResultFuture<Self::Connection, Self::Error> {
-        let config = self.config.clone();
+    async fn connect(&self) -> Result<Self::Connection, Self::Error> {
         let tls = self.tls.clone();
-        let connect_fut = async move { config.connect(tls).await };
-        Box::pin(connect_fut.map_ok(move |(client, conn)| {
-            mobc::spawn(conn);
-            client
-        }))
+        let (client, conn) = self.config.connect(tls).await?;
+        mobc::spawn(conn);
+        Ok(client)
     }
 
-    fn check(&self, conn: Self::Connection) -> ResultFuture<Self::Connection, Self::Error> {
-        let simple_query_fut = async move {
-            conn.simple_query("").await?;
-            Ok(conn)
-        };
-        Box::pin(simple_query_fut)
+    async fn check(&self, conn: Self::Connection) -> Result<Self::Connection, Self::Error> {
+        conn.simple_query("").await?;
+        Ok(conn)
     }
 }

@@ -1,6 +1,6 @@
 [package]
 name = "mobc-postgres"
-version = "0.4.1"
+version = "0.5.0"
 authors = ["importcjj <importcjj@gmail.com>"]
 edition = "2018"
 readme = "README.md"
@@ -21,7 +21,7 @@ with-uuid-0_8 = ["tokio-postgres/with-uuid-0_8"]
 
 [dependencies]
 tokio-postgres = "0.5"
-mobc = "0.4"
+mobc = "0.5"
 futures = "0.3"
 
 [dev-dependencies]
